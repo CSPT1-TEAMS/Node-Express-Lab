@@ -1,7 +1,12 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+const CORS = require('cors');
 const db = require('./data/db.js');
 
 const server = express()
+
+server.use(bodyParser.json());
+server.use(CORS());
 
 server.get('/api/posts', (req, res) => {
   db.find()
@@ -24,18 +29,20 @@ server.get('/api/posts/:id', (req, res) => {
 })
 
 server.post('/api/posts', (req, res) => {
-  const post = req.body
-  if (!post.title || !post.content) {
+  const post = req.body;
+  if (post.title && post.content) {
+    db.insert(post)
+      .then(posts => {
+        res.status(201).json({posts})
+      })
+      .catch(err => {
+        res.status(500).json({ error: "There was an error while saving the post to the database" })
+      })
+    }
+  else {
     res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+    return;
   }
-  db.insert(post)
-    .then(post => {
-      res.status(201).json({posts})
-    })
-    .catch(err => {
-      res.status(500).json({ error: "There was an error while saving the post to the database" })
-    })
-
 })
 
 server.listen(5005, () => {
