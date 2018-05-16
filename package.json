@@ -1,5 +1,5 @@
 {
-  "name": "node-express",
+  "name": "express",
   "version": "0.0.1",
   "description": "LambdaSchool Node.js and Express",
   "private": true,
@@ -14,5 +14,14 @@
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CSPT1-TEAMS/Node-Express-Lab.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/CSPT1-TEAMS/Node-Express-Lab/issues"
+  },
+  "homepage": "https://github.com/CSPT1-TEAMS/Node-Express-Lab#readme"
 }
