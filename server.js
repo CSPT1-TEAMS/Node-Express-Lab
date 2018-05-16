@@ -25,11 +25,11 @@ server.get('/api/posts/:id', (req, res) => {
 
 server.post('/api/posts', (req, res) => {
   const post = req.body
-  if (!post.title && !post.content) {
+  if (!post.title || !post.content) {
     res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
   }
   db.insert(post)
-    .then(posts => {
+    .then(post => {
       res.status(201).json({posts})
     })
     .catch(err => {
