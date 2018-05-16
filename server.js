@@ -20,6 +20,34 @@ app.post('/api/posts', (req, res) => {
   return res.status(200)
 })
 
+server.get('/', (request, response) => {
+  // console.log("GET REQUEST");
+  response.send('<h1> GET REQUEST RECEIVED</h1>')
+})
+
+server.get('/api/users', (req, res) => {
+  db.find()
+  .then( users => {
+    res.status(200).json({users})
+  })
+  .catch( err => {
+     res.status(500).json({error: 'PROBLEM RETREIVING DATA'});
+  })
+});
+
+server.get('/api/users/:id', (req, res) => {
+  const userId = req.params.id;
+  
+  db.findById(userId)
+    .then( user => {
+      res.json({ user });
+      res.status(200).json({user });
+    })
+    .catch( err => {
+      res.status(500).json({ error: 'PROBLEM RETREIVING DATA' });
+    })
+});
+
 app.listen(PORT, () => console.log(`listening on port ${PORT}`))
 
 
