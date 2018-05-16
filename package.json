@@ -1,5 +1,5 @@
 {
-  "name": "node-express",
+  "name": "node-express-lab-team-c",
   "version": "0.0.1",
   "description": "LambdaSchool Node.js and Express",
   "private": true,
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon server.js"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
@@ -16,5 +16,20 @@
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CSPT1-TEAMS/Node-Express-Lab.git"
+  },
+  "author": "Glenn-David and Andrew Jarrett",
+  "bugs": {
+    "url": "https://github.com/CSPT1-TEAMS/Node-Express-Lab/issues"
+  },
+  "homepage": "https://github.com/CSPT1-TEAMS/Node-Express-Lab#readme",
+  "keywords": [
+    "Glenn-David",
+    "Andrew",
+    "node",
+    "express"
+  ]
 }

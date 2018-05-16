@@ -11,13 +11,15 @@ server.post('/api/posts', (req, res) => {
   const { title, contents } = req.body
 
   if (!title || !contents)
-    return res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
-
-  console.log('in post route')
-  console.log(title)
-  console.log(contents)
-
-  return res.status(200)
+  return res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+// send request to database db.insert, get   then send response
+  db.insert(req.body)
+    .then (response => {
+      res.status(200).json({...response, title, contents });
+    })
+    .catch(err => {
+      res.status(500).json({err: err.message})
+    })
 })
 
 server.get('/', (request, response) => {
@@ -28,7 +30,7 @@ server.get('/', (request, response) => {
 server.get('/api/posts', (req, res) => {
   db.find()
     .then(users => {
-      res.status(200).json({ users })
+      res.status(200).json({ users });
     })
     .catch(err => {
       res.status(500).json({ error: 'PROBLEM RETREIVING DATA' });
@@ -48,8 +50,4 @@ server.get('/api/posts/:id', (req, res) => {
     })
 });
 
-server.listen(PORT, () => console.log(`listening on port ${PORT}`))
-
-
-
-
+server.listen(PORT, () => console.log(`listening on port ${PORT}`));
