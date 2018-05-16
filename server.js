@@ -29,21 +29,18 @@ server.get('/api/posts/:id', (req, res) => {
 })
 
 server.post('/api/posts', (req, res) => {
-  const post = req.body;
-  if (post.title && post.content) {
-    db.insert(post)
-      .then(posts => {
-        res.status(201).json({posts})
-      })
-      .catch(err => {
-        res.status(500).json({ error: "There was an error while saving the post to the database" })
-      })
-    }
-  else {
-    res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
-    return;
+  const newPost = req.body;
+  if (!newPost.title || !newPost.contents) {
+    res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
   }
-})
+  db.insert(newPost)
+    .then(post => {
+      res.status(201).json(post);
+    })
+    .catch(err => {
+      res.status(500).json({error: "There was an error while saving the post to the database"})
+    });
+});
 
 server.listen(5005, () => {
   console.log('Server is running on port 5005')
