@@ -63,6 +63,7 @@ server.put('/api/posts/:id', (req, res) => {
     const id = req.params.id;
     const title = req.body.title;
     const contents = req.body.contents;
+    const newPost = { title: title, contents: contents }
 
     if (!title || !contents) {
         return sendUserError("Please provide title and contents for the post.", res);
@@ -70,13 +71,20 @@ server.put('/api/posts/:id', (req, res) => {
 
     db.findById(id)
         .then(post => {
-            res.json({ post })
+            console.log(post)
         })
         .catch(err => {
             res.status(404).json({ message: "The post with the specified ID does not exist." })
+        });
+    db.update(id, newPost)
+        .then(post => {
+            res.status(200).json({ newPost })
+        })    
+        .catch(err => {
+            res.status(500).json({ error: "The post information could not be modified." })
         })
-    const foundPost = db.findById(id);
-    console.log(foundPost.body)
+
+
     // if (foundPost.length === 0) {
     //     return sendUserError("The post with the specified ID does not exist.", res);
     // }
