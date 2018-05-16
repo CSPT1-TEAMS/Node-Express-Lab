@@ -18,6 +18,22 @@ server.post('/api/posts', (req,res) => {
     })
 })
 
+server.delete('/api/posts/:id', (req, res) => {
+    const { id } = req.params
+    
+
+    db.findById(id).then(post => {
+        if(post) {
+            db.remove(id).then(response => {
+                res.status(200).json({ msg: 'Post removed' });
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'Post could not be removed' });
+            })
+        }
+    })
+})
+
 server.listen(5000,() => {
     console.log('Listening on port 5000');
 })
