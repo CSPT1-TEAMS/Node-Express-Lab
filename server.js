@@ -1,13 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const db = require('./data/db.js')
-const app = express()
+const server = express()
 const PORT = 4337
 
-app.use(bodyParser({ extended: true }))
-app.use(bodyParser.json())
+server.use(bodyParser({ extended: true }))
+server.use(bodyParser.json())
 
-app.post('/api/posts', (req, res) => {
+server.post('/api/posts', (req, res) => {
   const { title, contents } = req.body
 
   if (!title || !contents)
@@ -25,30 +25,30 @@ server.get('/', (request, response) => {
   response.send('<h1> GET REQUEST RECEIVED</h1>')
 })
 
-server.get('/api/users', (req, res) => {
+server.get('/api/posts', (req, res) => {
   db.find()
-  .then( users => {
-    res.status(200).json({users})
-  })
-  .catch( err => {
-     res.status(500).json({error: 'PROBLEM RETREIVING DATA'});
-  })
-});
-
-server.get('/api/users/:id', (req, res) => {
-  const userId = req.params.id;
-  
-  db.findById(userId)
-    .then( user => {
-      res.json({ user });
-      res.status(200).json({user });
+    .then(users => {
+      res.status(200).json({ users })
     })
-    .catch( err => {
+    .catch(err => {
       res.status(500).json({ error: 'PROBLEM RETREIVING DATA' });
     })
 });
 
-app.listen(PORT, () => console.log(`listening on port ${PORT}`))
+server.get('/api/posts/:id', (req, res) => {
+  const postId = req.params.id;
+
+  db.findById(postId)
+    .then(post => {
+      res.json({ post });
+      res.status(200).json({ post });
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'PROBLEM RETREIVING DATA' });
+    })
+});
+
+server.listen(PORT, () => console.log(`listening on port ${PORT}`))
 
 
 
