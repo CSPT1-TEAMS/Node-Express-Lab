@@ -21,10 +21,6 @@ server.get('/api/posts/:id',(req,res) => {
     )
 })
 
-
-
-
-
 server.post('/api/posts', (req,res) => {
     console.log('req.body is ',req.body)
     const{title, contents} = req.body;
