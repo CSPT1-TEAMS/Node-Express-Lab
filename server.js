@@ -104,9 +104,20 @@ server.put('/api/posts/:id', (req, res) => {
             }
         })
         .catch(err => {
+            if (res.statusCode === 404) {
+                res.status(404).json({
+                    message: "The post with the specified ID does not exist."
+                })
+            } 
+            if (null) {
+                res.status(400).json({
+                    errorMessage: "Please provide title and contents for the post."
+                })
+
+            } else {
                 res.status(500).json({
-                    error: "The posts information could not be retrieved."
+                    error: "The post could not be modified"
                 })
             }
-        )
+        })
 })
