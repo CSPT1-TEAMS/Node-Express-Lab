@@ -1,12 +1,15 @@
 const express = require('express');
 const db = require('./data/db.js');
+const cors = require('cors');
+const helmet = require('helmet');
 const server = express();
 
 
 server.listen(5000, () => {
     console.log('=== APP running on port 5000 ===')
 })
-
+server.use(helmet());
+server.use(cors());
 server.use(express.json());
 
 
@@ -59,4 +62,51 @@ server.post('/api/posts', (req, res) => {
                 })
             }
         })
+})
+
+server.delete('/api/posts/:id', (req, res) => {
+    const { id } = req.params;
+    let post;
+    db.findById(id)
+    .then( foundPost => {
+        post = {...foundPost};
+        return db.remove(id)
+
+    })
+    .then( () => {
+        res.status(201).json({ post });
+    })
+        .catch( err=> {
+            if (res.statusCode === 404) {
+                res.status(404).json({
+                    message: "The post with the specified ID does not exist."
+                })
+            } else {
+                res.status(500).json({
+                    error: "The post could not be removed"
+                })
+        }})
+})
+
+server.put('/api/posts/:id', (req, res) => {
+    const { id } = req.params;
+    const updatedPost = req.body;
+
+    db.update(id, updatedPost)
+        .then( (updated) => {
+            if (updated > 0) {
+                db.findById(id)
+                .then(post => {
+                    res.status(200).json({ post });
+                })
+            } else {
+                res.sendStatus(404)
+            }
+        })
+        .catch(err => {
+                res.status(500).json({
+                    error: "The posts information could not be retrieved."
+                })
+            }
+        )
 })
