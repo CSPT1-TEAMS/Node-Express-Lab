@@ -83,15 +83,39 @@ server.put('/api/posts/:id', (req, res) => {
         .catch(err => {
             res.status(500).json({ error: "The post information could not be modified." })
         })
+})
+
+// server.delete('/api/posts/:id', (req, res) => {
+//     const id = req.params.id;
+//     let post;
+//     db.findById(id)
+//         .then( foundPost => {
+//             post = foundPost;
+//             console.log(post)
+//             if (Object.keys(post).length === 0) {
+//                 return res.status(404).json({ message: "The post with the specified ID does not exist." });
+//             } else {
+//                 db.remove(id);
+//                 return res.status(200).json(post);
+//             }
+//         })
+//         .catch(err => res.status(500).json({ err }))
+// })
 
 
-    // if (foundPost.length === 0) {
-    //     return sendUserError("The post with the specified ID does not exist.", res);
-    // }
-    // else {
-    //     foundPost.title = title;
-    //     foundPost.contents = contents;
-    //     res.json(foundPost)
-    // }
+server.delete('/api/posts/:id', (req, res) => {
+    const { id } = req.params;
+    console.log('ID', id);
+    db.findById(id)
+        .then( foundPost => {
+            post = {...foundPost };
+            return db.remove(id);
+        })
+        .then( () => {
+            return res.status(200).json(post);
+        })
+        .catch(err => {
+            return res.status(404).json({ message: "The post with the specified ID does not exist." })
+        });
 })
 
