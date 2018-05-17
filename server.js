@@ -17,7 +17,7 @@ server.get('/api/posts', (req, res) => {
         res.status(200).json({posts})
     })
     .catch(error => {
-        res.status(500).json({error});
+        res.status(500).json({error: "The posts information could not be retrieved."});
     })
 })
 
@@ -28,7 +28,7 @@ server.get('/api/posts/:id', (req, res) => {
         res.status(200).json({post})
     })
     .catch(error => {
-        res.status(500).json({error});
+        res.status(500).json({message: "The post with the specified ID does not exist." });
     })
 })
 
@@ -43,10 +43,10 @@ server.post('/api/posts', (req, res) => {
     const value = {title, contents}
     db.insert({...value})
     .then(post => {
-        res.status(201).json({post});
+        res.status(200).json({...post, title, contents});
     })
     .catch(error => {
-        res.status(500).json({error});
+        res.status(500).json({ error: "The post information could not be modified." });
     })
 })
 
@@ -55,21 +55,40 @@ server.put('/api/posts/:id', (req, res) => {
     const { title, contents } = req.body
     const post = {title, contents}
     db.update(id, post)
-    .then(posts => {
-        res.status(200).json({posts});
-    })
-    .then(error => {
-        res.status(500).json({error});
-    })
+        .then( updated => {
+            if(updated > 0) {
+                db.findById(id)
+                    .then(post => {
+                        res.status(200).json({post});
+                    })
+            } else {
+                return res.sendStatus(404);
+            }
+        })
+        .catch(error => res.status(500).json({error}))
+
+    // .then(posts => {
+    //     res.status(200).json({posts});
+    // })
+    // .then(error => {
+    //     res.status(500).json({error});
+    // })
 })
 
 server.delete('/api/posts/:id', (req, res) => {
     const { id } = req.params;
-    db.remove(id)
-    .then(posts => {
-        res.status(200).json({posts})
+    let user;
+    
+    db.findById(id)
+    .then(foundUser => {
+        user = {...foundUser};
+        return db.remove(id)
+    })
+    .then( () => {
+        res.status(204).json(user);
     })
     .catch(error => {
         res.status(500).json({error})
     })
+
 })
