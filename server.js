@@ -31,7 +31,7 @@ server.get('/api/posts/:id', (req, res) => {
     })
 })
 
-server.post('/api/posts', (req, res) => {
+/* server.post('/api/posts', (req, res) => {
     const {title, content} = req.body;
     const newPost = {title, content, id: postId};
 
@@ -57,12 +57,48 @@ server.post('/api/posts', (req, res) => {
      
 
     // res.send('POST request to the homepage')
+}) */
+
+server.post('/api/posts', (req, res) => {
+    const post = req.body;
+    db.insert(post)
+        .then(postObj => {
+            res.status(201).json(postObj);
+    })
+    .catch(err => res.status(500).json({err}))
 })
 
-server.put('/api/posts/:id', (req, res) => {
-    res.send('Update the book')
-})
 
-server.delete('/api/posts/:id', (req, res) => {
-    res.send('Update the book')
+server.delete('/api/posts', (req, res) => {
+    const {id} = req.query;
+    let post;
+    db.findById(id)
+    .then(foundPost => {
+        post = {...foundPost};//Object.assign({}, foundUser)
+        return db.remove(id)
+    })
+    .then( () => {
+        res.status(200).json(post);
+    })
+    .catch(err => res.status(500).json({err}))
+    })
+
+
+server.put('/api/posts', (req, res) => {
+    const {id} = req.params;
+    const updatedPost = req.body;
+
+    db.update(id, updatedPost)
+    .then( () => {
+        if(updated > 0) {
+            db.findById(id)
+            .then(post => {
+                res.status(200).json(post)
+            })
+        } else {
+            return res.sendStatus(404)
+        }
+        res.status(200).json(post);
+    })
+    .catch(err => res.status(500).json({err}))
 })
