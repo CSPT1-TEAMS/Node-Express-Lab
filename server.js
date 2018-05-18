@@ -63,13 +63,13 @@ server.post("/api/posts", (req, res) => {
 server.delete("/api/posts/:id", (req, res) => {
   const id = req.params.id;
   db
-    .findById(id)
+    .findById(id) //will return only one item
     .then(posts => {
       db
         .remove(id)
         .then(foundRes => {
           res.status(200).json({
-            post: posts[0]
+            posts
           });
         })
 
@@ -96,9 +96,9 @@ server.put("/api/posts/:id", (req, res) => {
     })
   db.update(id, updatedPost)
     .then(updated => {
-      db.findById(id)
+      db.findById(id) //b/c they wrote the data base, only one returning 
       .then(posts => {
-        res.status(200).json({ post: posts[0] })
+        res.status(200).json({posts })
       })
       .catch(err => {
             res.status(404).json({
