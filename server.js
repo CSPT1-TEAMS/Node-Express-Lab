@@ -92,32 +92,40 @@ server.put('/api/posts/:id', (req, res) => {
     const { id } = req.params;
     const updatedPost = req.body;
 
+    if (!updatedPost.title || !updatedPost.contents) {
+        console.log('title', updatedPost.title);
+        console.log('contents', updatedPost.contents);
+
+
+        res.status(400).json({
+            errorMessage: "Please provide title and contents for the post."
+        })
+    }
     db.update(id, updatedPost)
         .then( (updated) => {
+            console.log('post', !updated);
             if (updated > 0) {
                 db.findById(id)
                 .then(post => {
+                    console.log('post', post);
+                    console.log('contents', post.contents);
                     res.status(200).json({ post });
                 })
             } else {
-                res.sendStatus(404)
+                // (res.statusCode === 404) {
+                    res.status(404).json({
+                        message: "The post with the specified ID does not exist."
+                    })
             }
-        })
-        .catch(err => {
-            if (res.statusCode === 404) {
-                res.status(404).json({
-                    message: "The post with the specified ID does not exist."
-                })
-            } 
-            if (null) {
-                res.status(400).json({
-                    errorMessage: "Please provide title and contents for the post."
-                })
+        //}
+    })
+//         .catch(err => {
 
-            } else {
-                res.status(500).json({
-                    error: "The post could not be modified"
-                })
-            }
-        })
-})
+//             } 
+//             else {
+//                 res.status(500).json({
+//                     error: "The post could not be modified"
+//                 })
+//             }
+//         })
+ })
