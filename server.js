@@ -83,12 +83,12 @@ server.delete('/api/posts/:id', (req, res) => {
     .then(foundUser => {
         if(foundUser.length < 1 ) { return res.status(404).json({message: "The post with the specified ID does not exist."})}
         else {
-        user = {...foundUser};
-        return db.remove(id)
+            user = {...foundUser};
+            return db.remove(id)
+                    .then(() => {
+                        res.status(200).json(foundUser);
+                    })
     }
-    })
-    .then( () => {
-        res.status(204).json(user);
     })
     .catch(error => {
         res.status(500).json({error: "The post could not be removed"})
