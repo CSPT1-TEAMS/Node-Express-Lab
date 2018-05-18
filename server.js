@@ -3,7 +3,7 @@ const db = require('./data/db.js');
 const bodyParser = require('body-parser');
 
 const server = express();
-// add your server code starting here
+
 
 server.listen(3000,  () => {
     console.log('app is running on port 3000')
@@ -23,23 +23,25 @@ server.get('/api/posts', (req, res) => {
 
 server.get('/api/posts/:id', (req, res) => {
     const { id } = req.params;
+    
     db.findById(id)
     .then(post => {
-        res.status(200).json({post})
+        if(post.length < 1 ) { return res.status(404).json({message: "The post with the specified ID does not exist."})}
+        else {  return res.status(200).json({post})     }
+   
     })
     .catch(error => {
-        res.status(500).json({message: "The post with the specified ID does not exist." });
+        res.status(500).json({error: "The post information could not be retrieved." });
     })
+ 
 })
 
 server.post('/api/posts', (req, res) => {
-    const { title, contents } = req.body
+    const { title, contents, id } = req.body
 
-    if(!title) return res.status(400).json({errorMessage: "Please provide title and contents for the post."})
-    if(!contents) return res.status(400).json({errorMessage: "Please provide title and contents for the post."})
-    // console.log(title)
-    // const posts = {...title, ...contents}
-    // console.log(posts);
+    if(!title) return res.status(400).json({errorMessage: "Please provide title for the post."})
+    if(!contents) return res.status(400).json({errorMessage: "Please provide contents for the post."})
+
     const value = {title, contents}
     db.insert({...value})
     .then(post => {
@@ -53,7 +55,10 @@ server.post('/api/posts', (req, res) => {
 server.put('/api/posts/:id', (req, res) => {
     const { id } = req.params;
     const { title, contents } = req.body
+    if(!title) return res.status(400).json({errorMessage: "Please provide title for the put."})
+    if(!contents) return res.status(400).json({errorMessage: "Please provide contents for the put."})
     const post = {title, contents}
+
     db.update(id, post)
         .then( updated => {
             if(updated > 0) {
@@ -62,33 +67,31 @@ server.put('/api/posts/:id', (req, res) => {
                         res.status(200).json({post});
                     })
             } else {
-                return res.sendStatus(404);
+                return res.status(404).json({message: "The post with the specified ID does not exist."});
             }
         })
-        .catch(error => res.status(500).json({error}))
+        .catch(error => res.status(500).json({error: "The post information could not be modified."}))
 
-    // .then(posts => {
-    //     res.status(200).json({posts});
-    // })
-    // .then(error => {
-    //     res.status(500).json({error});
-    // })
+  
 })
 
 server.delete('/api/posts/:id', (req, res) => {
     const { id } = req.params;
     let user;
-    
+  
     db.findById(id)
     .then(foundUser => {
+        if(foundUser.length < 1 ) { return res.status(404).json({message: "The post with the specified ID does not exist."})}
+        else {
         user = {...foundUser};
         return db.remove(id)
+    }
     })
     .then( () => {
         res.status(204).json(user);
     })
     .catch(error => {
-        res.status(500).json({error})
+        res.status(500).json({error: "The post could not be removed"})
     })
 
 })
