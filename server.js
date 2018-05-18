@@ -97,7 +97,7 @@ server.put('/api/posts/:id', (req, res) => {
         console.log('contents', updatedPost.contents);
 
 
-        res.status(400).json({
+       return res.status(400).json({
             errorMessage: "Please provide title and contents for the post."
         })
     }
@@ -112,20 +112,14 @@ server.put('/api/posts/:id', (req, res) => {
                     res.status(200).json({ post });
                 })
             } else {
-                // (res.statusCode === 404) {
-                    res.status(404).json({
-                        message: "The post with the specified ID does not exist."
-                    })
+                res.status(404).json({
+                    message: "The post with the specified ID does not exist."
+                })
             }
-        //}
-    })
-//         .catch(err => {
-
-//             } 
-//             else {
-//                 res.status(500).json({
-//                     error: "The post could not be modified"
-//                 })
-//             }
-//         })
- })
+        })
+        .catch(err => {
+                res.status(500).json({
+                    error: "The post could not be modified"
+                })
+    });
+});
