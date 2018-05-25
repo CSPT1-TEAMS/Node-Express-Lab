@@ -43,7 +43,7 @@ server.get("/api/posts/:id", (req, res) => {
 
 server.post("/api/posts", (req, res) => {
   const newPost = req.body;
-  if (!newPost.title || !newPost.contents) {
+  if (!newPost.title || !newPost.contents) { //dan advised against this
     res.status(400).json({
       errorMessage: "Please provide title and contents for the post."
     });
